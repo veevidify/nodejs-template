@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  revproxy:
+    build:
+      context: resources/nginx
+    ports:
+      - "80:80"
+    networks:
+      - node-bridge
+
+  app:
+    build:
+      context: .
+      dockerfile: dev.Dockerfile
+    container_name: node-http
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+    ports:
+      - "8080:$PORT"
+    networks:
+      - node-bridge
+    command: npm run start-dev
+
+networks:
+  node-bridge:
